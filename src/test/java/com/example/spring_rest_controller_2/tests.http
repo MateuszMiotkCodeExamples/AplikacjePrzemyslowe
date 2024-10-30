@@ -1,0 +1,36 @@
+GET http://localhost:8080/api/products
+
+<> 2024-10-30T145343.200.json
+
+### GET http://localhost:8080/api/products/12222
+
+<> 2024-10-30T145400.404.json
+<> 2024-10-30T145356.200.json
+
+### Dodanie nowego produktu
+POST http://localhost:8080/api/products
+Content-Type: application/json
+
+{
+  "name": "Monitor",
+  "price": 1299.99,
+  "description": "Monitor 27 cali 4K"
+}
+
+### Aktualizacja produktu
+PUT http://localhost:8080/api/products/1
+Content-Type: application/json
+
+{
+  "name": "Laptop Pro",
+  "price": 4599.99,
+  "description": "Laptop gamingowy z RTX 4070"
+}
+
+### Usunięcie produktu
+DELETE http://localhost:8080/api/products/1
+
+<> 2024-10-30T145442.404.json
+<> 2024-10-30T145429.200.json
+<> 2024-10-30T145418.201.json
+<> 2024-10-30T145417.201.json
