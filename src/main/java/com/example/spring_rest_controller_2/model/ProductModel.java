@@ -16,8 +16,20 @@ public class ProductModel {
 
     @PostConstruct
     public void init() {
-        products.add(new Product(nextId++, "Laptop", new BigDecimal("3999.99"), "Laptop gamingowy"));
-        products.add(new Product(nextId++, "Smartfon", new BigDecimal("1999.99"), "Smartfon z 5G"));
+        // Inicjalizacja przykładowych danych
+        products.add(new Product() {{
+            setId(nextId++);
+            setName("Laptop");
+            setPrice(new BigDecimal("3999.99"));
+            setDescription("Laptop gamingowy");
+        }});
+
+        products.add(new Product() {{
+            setId(nextId++);
+            setName("Smartfon");
+            setPrice(new BigDecimal("1999.99"));
+            setDescription("Smartfon z 5G");
+        }});
     }
 
     public List<Product> findAll() {
@@ -32,9 +44,11 @@ public class ProductModel {
 
     public Product save(Product product) {
         if (product.getId() == null) {
+            // Nowy produkt
             product.setId(nextId++);
             products.add(product);
         } else {
+            // Aktualizacja istniejącego produktu
             updateExisting(product);
         }
         return product;

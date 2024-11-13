@@ -24,24 +24,24 @@ public class ProductService {
 
     public Product getProductById(Long id) {
         return productModel.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Nie znaleziono produktu"));
     }
 
     public Product addProduct(Product product) {
         return productModel.save(product);
     }
 
-    public Product updateProduct(Long id, Product updatedProduct) {
+    public Product updateProduct(Long id, Product product) {
         if (!productModel.exists(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nie znaleziono produktu");
         }
-        updatedProduct.setId(id);
-        return productModel.save(updatedProduct);
+        product.setId(id);
+        return productModel.save(product);
     }
 
     public void deleteProduct(Long id) {
         if (!productModel.delete(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nie znaleziono produktu");
         }
     }
 }
