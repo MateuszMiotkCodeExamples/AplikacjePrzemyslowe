@@ -21,8 +21,8 @@
             <h5>Dodaj nowy produkt</h5>
         </div>
         <div class="card-body">
-            <form th:action="@{/products/add}" th:object="${product}" method="post">
-                <div class="mb-3">
+            <form th:action="@{/products}" method="post" th:object="${product}" enctype="multipart/form-data">
+            <div class="mb-3">
                     <label for="name" class="form-label">Nazwa</label>
                     <input type="text" class="form-control" id="name" th:field="*{name}"
                            th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''">
@@ -44,6 +44,10 @@
                               th:classappend="${#fields.hasErrors('description')} ? 'is-invalid' : ''"></textarea>
                     <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}"
                          th:errors="*{description}">Błąd opisu</div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Zdjęcie</label>
+                    <input type="file" class="form-control" name="image" accept="image/*">
                 </div>
 
                 <button type="submit" class="btn btn-primary">Dodaj produkt</button>
@@ -67,6 +71,11 @@
                 <td th:text="${product.id}">1</td>
                 <td th:text="${product.name}">Nazwa</td>
                 <td th:text="${product.price} + ' zł'">0.00 zł</td>
+                <td>
+                    <img th:if="${product.imagePath}"
+                         th:src="@{/products/image/{fileName}(fileName=${product.imagePath})}"
+                         style="max-width: 100px;">
+                </td>
                 <td>
                     <a th:href="@{/products/details/{id}(id=${product.id})}"
                        class="btn btn-sm btn-info">Szczegóły</a>

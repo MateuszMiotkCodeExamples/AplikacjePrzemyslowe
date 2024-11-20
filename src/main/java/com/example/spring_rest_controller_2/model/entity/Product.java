@@ -22,4 +22,5 @@ public class Product {
 
     @Size(max = 500, message = "Opis nie może być dłuższy niż 500 znaków")
     private String description;
+    private String imagePath; // ścieżka do zdjęcia
 }
