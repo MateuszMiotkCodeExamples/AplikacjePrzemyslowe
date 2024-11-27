@@ -1,26 +1,35 @@
 package com.example.spring_rest_controller_2.model.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+@Entity
 @Data
-@NoArgsConstructor
 public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Nazwa produktu jest wymagana")
-    @Size(min = 2, max = 100, message = "Nazwa musi mieć od 2 do 100 znaków")
+    @Column(nullable = false)
     private String name;
 
-    @NotNull(message = "Cena jest wymagana")
-    @DecimalMin(value = "0.01", message = "Cena musi być większa niż 0")
+    @Column(nullable = false)
     private BigDecimal price;
 
-    @Size(max = 500, message = "Opis nie może być dłuższy niż 500 znaków")
     private String description;
-    private String imagePath; // ścieżka do zdjęcia
+    private String imagePath;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<Review> reviews = new ArrayList<>();
 }
