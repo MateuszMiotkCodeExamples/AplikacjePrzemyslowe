@@ -5,7 +5,10 @@ import com.example.spring_rest_controller_2.model.ProductModel;
 import com.example.spring_rest_controller_2.model.entity.Category;
 import com.example.spring_rest_controller_2.model.entity.Product;
 import com.example.spring_rest_controller_2.model.entity.Review;
+import com.example.spring_rest_controller_2.repository.CategoryRepository;
+import com.example.spring_rest_controller_2.repository.ProductRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,141 +21,102 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 @Slf4j
 public class ProductService {
-    // Symulacja bazy danych w pamięci
-    private final List<Product> products = new ArrayList<>();
-    private final CategoryService categoryService;
-    private Long nextId = 1L;
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+    private final FileService fileService;
 
     @Autowired
-    public ProductService(CategoryService categoryService) {
-        this.categoryService = categoryService;
-        initializeSampleData();
+    public ProductService(ProductRepository productRepository,
+                          CategoryRepository categoryRepository,
+                          FileService fileService) {
+        this.productRepository = productRepository;
+        this.categoryRepository = categoryRepository;
+        this.fileService = fileService;
     }
 
     @PostConstruct
-    private void initializeSampleData() {
-        try {
-            Category category = categoryService.getCategory(1L);
-
-            Product product = new Product();
-            product.setId(nextId++);
-            product.setName("Laptop Dell XPS 13");
-            product.setPrice(new BigDecimal("4999.99"));
-            product.setDescription("Nowoczesny laptop biznesowy");
-            product.setCategory(category);
-            product.setReviews(new ArrayList<>());
-
-            products.add(product);
-            log.info("Zainicjalizowano przykładowe dane");
-        } catch (Exception e) {
-            log.error("Błąd podczas inicjalizacji przykładowych danych", e);
+    public void init() {
+        // Dodajemy przykładowe dane tylko jeśli baza jest pusta
+        if (productRepository.count() == 0) {
+            createSampleData();
         }
     }
 
-    // Metoda do pobierania wszystkich produktów używana w listProducts()
+    private void createSampleData() {
+        try {
+            // Tworzenie kategorii
+            Category electronics = new Category();
+            electronics.setName("Elektronika");
+            categoryRepository.save(electronics);
+
+            // Tworzenie produktu
+            Product laptop = new Product();
+            laptop.setName("Laptop Dell XPS 13");
+            laptop.setPrice(new BigDecimal("4999.99"));
+            laptop.setDescription("Nowoczesny laptop biznesowy");
+            laptop.setCategory(electronics);
+            productRepository.save(laptop);
+
+            log.info("Utworzono przykładowe dane");
+        } catch (Exception e) {
+            log.error("Błąd podczas tworzenia przykładowych danych", e);
+        }
+    }
+
     public List<Product> getAllProducts() {
-        log.debug("Pobieranie wszystkich produktów. Aktualna liczba: {}", products.size());
-        return new ArrayList<>(products);
+        return productRepository.findAll();
     }
 
-    // Metoda do pobierania pojedynczego produktu używana w productDetails()
     public Product getProduct(Long id) {
-        log.debug("Wyszukiwanie produktu o ID: {}", id);
-        return products.stream()
-                .filter(p -> p.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Nie znaleziono produktu o ID: " + id));
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Produkt", "id", id));
     }
 
-    // Metoda do zapisywania produktu używana w addProduct()
+    @Transactional
     public Product save(Product product) {
         validateProduct(product);
 
-        if (product.getId() == null) {
-            // Nowy produkt
-            product.setId(nextId++);
-            product.setReviews(new ArrayList<>()); // inicjalizacja listy recenzji
-            products.add(product);
-            log.info("Dodano nowy produkt: {}", product.getName());
-        } else {
-            // Aktualizacja istniejącego produktu
-            int index = findProductIndex(product.getId());
-            if (index != -1) {
-                // Zachowujemy istniejące recenzje podczas aktualizacji
-                List<Review> existingReviews = products.get(index).getReviews();
-                product.setReviews(existingReviews);
-                products.set(index, product);
-                log.info("Zaktualizowano produkt: {}", product.getName());
-            } else {
-                throw new ResourceNotFoundException("Nie znaleziono produktu o ID: " + product.getId());
-            }
+        if (product.getCategory() != null && product.getCategory().getId() != null) {
+            Category category = categoryRepository.findById(product.getCategory().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Kategoria nie istnieje"));
+            product.setCategory(category);
         }
-        return product;
+
+        return productRepository.save(product);
     }
 
-    // Metoda do dodawania recenzji używana w addReview()
+    @Transactional
     public Product addReview(Long productId, Review review) {
-        log.debug("Dodawanie recenzji do produktu o ID: {}", productId);
-
         Product product = getProduct(productId);
-        validateReview(review);
-
-        // Ustawiamy podstawowe dane recenzji
-        review.setId(System.nanoTime()); // Proste generowanie ID dla recenzji
         review.setProduct(product);
-
-        // Dodajemy recenzję do produktu
-        if (product.getReviews() == null) {
-            product.setReviews(new ArrayList<>());
-        }
         product.getReviews().add(review);
-        log.info("Dodano recenzję do produktu: {}", product.getName());
-
-        return product;
+        return productRepository.save(product);
     }
 
-    // Metody pomocnicze do walidacji
+    @Transactional
+    public void deleteProduct(Long id) {
+        Product product = getProduct(id);
+        if (product.getImagePath() != null) {
+            fileService.deleteFile(product.getImagePath());
+        }
+        productRepository.delete(product);
+    }
+
     private void validateProduct(Product product) {
         List<String> errors = new ArrayList<>();
 
         if (product.getName() == null || product.getName().trim().isEmpty()) {
             errors.add("Nazwa produktu jest wymagana");
         }
-
-        if (product.getPrice() == null) {
-            errors.add("Cena jest wymagana");
-        } else if (product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
+        if (product.getPrice() == null || product.getPrice().compareTo(BigDecimal.ZERO) <= 0) {
             errors.add("Cena musi być większa od zera");
-        }
-
-        if (product.getCategory() != null && product.getCategory().getId() != null) {
-            try {
-                Category category = categoryService.getCategory(product.getCategory().getId());
-                product.setCategory(category);
-            } catch (ResourceNotFoundException e) {
-                errors.add("Wybrana kategoria nie istnieje");
-            }
         }
 
         if (!errors.isEmpty()) {
             throw new ValidationException(String.join(", ", errors));
         }
-    }
-
-    private void validateReview(Review review) {
-        if (review.getComment() == null || review.getComment().trim().isEmpty()) {
-            throw new ValidationException("Treść recenzji jest wymagana");
-        }
-    }
-
-    private int findProductIndex(Long id) {
-        for (int i = 0; i < products.size(); i++) {
-            if (products.get(i).getId().equals(id)) {
-                return i;
-            }
-        }
-        return -1;
     }
 }

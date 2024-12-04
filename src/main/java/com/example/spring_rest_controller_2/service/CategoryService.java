@@ -2,6 +2,7 @@ package com.example.spring_rest_controller_2.service;
 
 import com.example.spring_rest_controller_2.exception.ResourceNotFoundException;
 import com.example.spring_rest_controller_2.model.entity.Category;
+import com.example.spring_rest_controller_2.repository.CategoryRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ValidationException;
@@ -13,61 +14,34 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 @Slf4j
 public class CategoryService {
-    private final List<Category> categories = new ArrayList<>();
-    private Long nextId = 1L;
+    private final CategoryRepository categoryRepository;
 
-    @PostConstruct
-    public void init() {
-        // Dodajemy przykładowe kategorie
-        Category category = new Category();
-        category.setId(nextId++);
-        category.setName("Elektronika");
-        categories.add(category);
-
-        category = new Category();
-        category.setId(nextId++);
-        category.setName("Książki");
-        categories.add(category);
+    @Autowired
+    public CategoryService(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
 
     public List<Category> getAllCategories() {
-        return new ArrayList<>(categories);
+        return categoryRepository.findAll();
     }
 
     public Category getCategory(Long id) {
-        return categories.stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Kategoria o ID " + id + " nie została znaleziona"));
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "id", id));
     }
 
+    @Transactional
     public Category save(Category category) {
+        validateCategory(category);
+        return categoryRepository.save(category);
+    }
+
+    private void validateCategory(Category category) {
         if (category.getName() == null || category.getName().trim().isEmpty()) {
             throw new ValidationException("Nazwa kategorii jest wymagana");
         }
-
-        if (category.getId() == null) {
-            category.setId(nextId++);
-            categories.add(category);
-            log.info("Dodano nową kategorię: {}", category.getName());
-        } else {
-            int index = getCategoryIndex(category.getId());
-            if (index != -1) {
-                categories.set(index, category);
-                log.info("Zaktualizowano kategorię: {}", category.getName());
-            }
-        }
-        return category;
-    }
-
-    private int getCategoryIndex(Long id) {
-        for (int i = 0; i < categories.size(); i++) {
-            if (categories.get(i).getId().equals(id)) {
-                return i;
-            }
-        }
-        return -1;
     }
 }
