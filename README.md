@@ -1,12 +1,14 @@
 # Przykład: Prosty kalkulator matematyczny
 
-Ten projekt demonstruje konfigurację narzędzi buildowych Maven, pisanie testów JUnit 5 i mierzenie pokrycia kodu za pomocą JaCoCo na przykładzie klasy `Calculator`.
+Ten projekt demonstruje konfigurację narzędzi buildowych Maven i Gradle, pisanie testów JUnit 5 i mierzenie pokrycia kodu za pomocą JaCoCo na przykładzie klasy `Calculator`.
 
 ## Struktura projektu
 
 ```
 calculator/
-├── pom.xml
+├── pom.xml                    # Konfiguracja Maven
+├── build.gradle              # Konfiguracja Gradle
+├── .gitignore                # Plik ignorowania dla Git
 ├── src/
 │   ├── main/
 │   │   └── java/
@@ -16,8 +18,10 @@ calculator/
 │       └── java/
 │           └── com/example/
 │               └── CalculatorTest.java
-└── target/
-    └── site/jacoco/index.html
+├── target/                   # Artefakty Maven
+│   └── site/jacoco/index.html
+└── build/                    # Artefakty Gradle
+    └── reports/jacoco/test/html/index.html
 ```
 
 ## Funkcjonalność
@@ -49,10 +53,25 @@ mvn jacoco:report
 mvn clean verify
 ```
 
+## Komendy Gradle
+
+```bash
+# Kompilacja i uruchomienie testów
+./gradlew clean test
+
+# Generowanie raportu pokrycia kodu
+./gradlew jacocoTestReport
+
+# Pełny build projektu
+./gradlew build
+```
+
 ## Raport pokrycia kodu
 
 Po uruchomieniu testów, raport JaCoCo jest dostępny w:
-`target/site/jacoco/index.html`
+
+**Maven:** `target/site/jacoco/index.html`  
+**Gradle:** `build/reports/jacoco/test/html/index.html`
 
 Raport pokazuje:
 - **100% pokrycie instrukcji** - wszystkie linie kodu zostały wykonane
@@ -62,17 +81,26 @@ Raport pokazuje:
 
 ## Wymagania
 
-- Java 17+
-- Maven 3.6+
+- Java 17+ (zalecana Java 17-23, Java 24 może mieć problemy z JaCoCo)
+- Maven 3.6+ lub Gradle 7+
 - JUnit 5
 - JaCoCo
 
+**Uwaga:** Jeśli używasz Java 24, możesz napotkać problemy z JaCoCo. W takim przypadku użyj Java 23 lub starszej wersji.
+
 ## Uruchomienie
 
+### Opcja 1: Maven
 1. Sklonuj repozytorium
 2. Przejdź do katalogu projektu
 3. Uruchom: `mvn clean test`
 4. Otwórz raport: `target/site/jacoco/index.html`
+
+### Opcja 2: Gradle
+1. Sklonuj repozytorium
+2. Przejdź do katalogu projektu
+3. Uruchom: `./gradlew clean test`
+4. Otwórz raport: `build/reports/jacoco/test/html/index.html`
 
 ## Przykład użycia
 
