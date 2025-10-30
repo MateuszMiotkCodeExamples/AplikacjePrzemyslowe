@@ -130,10 +130,29 @@ Plik `application.properties` zawiera:
 - Poziomy logowania
 - Właściwości aplikacji
 
+## Pokrycie Kodu - JaCoCo
+
+Projekt jest skonfigurowany z JaCoCo do mierzenia pokrycia kodu testami. Aktualne pokrycie:
+
+- **BookController**: 100% instrukcji
+- **CreateBookRequest**: 100%
+- **Calculator**: 78.6%
+- **Book**: 72.4%
+- **BookDTO**: 58.3%
+
+Aby wygenerować raport pokrycia:
+```bash
+mvn clean test
+open target/site/jacoco/index.html
+```
+
 ## Rozwiązanie Problemu z Java 25
 
 Projekt używa Java 25, która nie jest jeszcze w pełni obsługiwana przez wszystkie biblioteki testowe.
-Rozwiązanie: dodano flagę `-Dnet.bytebuddy.experimental=true` w konfiguracji Surefire plugin.
+Rozwiązanie: 
+1. Dodano flagę `-Dnet.bytebuddy.experimental=true` w konfiguracji Surefire plugin
+2. Konfiguracja JaCoCo używa `@{argLine}` aby poprawnie przekazać parametry do Surefire
+3. Wykluczono klasy aplikacji i konfiguracyjne z raportu pokrycia
 
 ## Zależności
 
