@@ -3,6 +3,8 @@ package com.example.library.controller;
 import com.example.library.dto.CreateBookRequest;
 import com.example.library.model.Book;
 import com.example.library.service.BookService;
+import com.example.library.service.CsvImportService;
+import com.example.library.service.FileStorageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,12 @@ class BookControllerTest {
     
     @MockBean
     private BookService bookService;
+
+    @MockBean
+    private FileStorageService fileStorageService;
+
+    @MockBean
+    private CsvImportService csvImportService;
 
     @Test
     void shouldReturnAllBooks() throws Exception {

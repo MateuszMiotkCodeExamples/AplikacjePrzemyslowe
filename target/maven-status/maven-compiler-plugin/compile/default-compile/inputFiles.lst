@@ -1,1 +1,9 @@
+/Users/mateuszmiotk/Repositories/AplikacjePrzemyslowe/src/main/java/com/example/library/controller/BookController.java
+/Users/mateuszmiotk/Repositories/AplikacjePrzemyslowe/src/main/java/com/example/library/service/FileStorageService.java
+/Users/mateuszmiotk/Repositories/AplikacjePrzemyslowe/src/main/java/com/example/library/service/CsvImportService.java
+/Users/mateuszmiotk/Repositories/AplikacjePrzemyslowe/src/main/java/com/example/library/dto/BookDTO.java
+/Users/mateuszmiotk/Repositories/AplikacjePrzemyslowe/src/main/java/com/example/library/model/Book.java
+/Users/mateuszmiotk/Repositories/AplikacjePrzemyslowe/src/main/java/com/example/library/dto/CreateBookRequest.java
+/Users/mateuszmiotk/Repositories/AplikacjePrzemyslowe/src/main/java/com/example/library/LibraryApplication.java
+/Users/mateuszmiotk/Repositories/AplikacjePrzemyslowe/src/main/java/com/example/library/service/BookService.java
 /Users/mateuszmiotk/Repositories/AplikacjePrzemyslowe/src/main/java/com/example/Calculator.java
