@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${book.title}">Szczegóły książki</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .book-details {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+        .book-cover-large {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .cover-placeholder {
+            width: 100%;
+            height: 400px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+        .book-info h1 {
+            margin-top: 0;
+        }
+        .info-row {
+            margin-bottom: 15px;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #666;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+<a th:href="@{/web/books}" class="back-link">← Powrót do listy</a>
+
+<div class="book-details">
+    <div>
+        <img th:if="${book.hasCover}"
+             th:src="${book.coverUrl}"
+             th:alt="${book.title}"
+             class="book-cover-large">
+        <div th:unless="${book.hasCover}"
+             class="cover-placeholder">
+            Brak okładki
+        </div>
+    </div>
+
+    <div class="book-info">
+        <h1 th:text="${book.title}">Tytuł książki</h1>
+        <div class="info-row">
+            <span class="info-label">Autor:</span>
+            <span class="info-value" th:text="${book.author}">Autor</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Rok wydania:</span>
+            <span class="info-value" th:text="${book.year}">0000</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+
