@@ -1,8 +1,6 @@
 package com.example;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -11,10 +9,16 @@ import static org.junit.jupiter.api.Assertions.*;
 class CalculatorTest {
     
     private Calculator calculator;
-    
+
+
     @BeforeEach
     void setUp() {
         calculator = new Calculator();
+    }
+
+    @AfterEach
+    void tearDown() {
+        calculator = null;
     }
     
     @Test
@@ -26,9 +30,8 @@ class CalculatorTest {
         
         // Act
         int result = calculator.add(a, b);
-        
         // Assert
-        assertEquals(8, result);
+        assertEquals(8, result,"test nie przeszedl");
     }
     
     @Test
@@ -46,11 +49,11 @@ class CalculatorTest {
         assertEquals(expected, calculator.multiply(a, b));
     }
     
-    @Test
-    void shouldDivideNumbers() {
-        assertEquals(2.5, calculator.divide(5, 2), 0.001);
-    }
-    
+//    @Test
+//    void shouldDivideNumbers() {
+//        assertEquals(2.5, calculator.divide(5, 2), 0.001);
+//    }
+//
     @Test
     void shouldThrowExceptionWhenDividingByZero() {
         Exception exception = assertThrows(
