@@ -1,9 +1,0 @@
-com/example/library/service/BookService.class
-com/example/library/controller/BookController.class
-com/example/library/service/CsvImportService.class
-com/example/library/LibraryApplication.class
-com/example/Calculator.class
-com/example/library/service/FileStorageService.class
-com/example/library/model/Book.class
-com/example/library/dto/BookDTO.class
-com/example/library/dto/CreateBookRequest.class

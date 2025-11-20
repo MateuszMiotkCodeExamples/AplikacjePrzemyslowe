@@ -1,9 +1,0 @@
-GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-calculator,com.example.library.dto,BookDTO,15,21,0,0,8,8,4,4,4,4
-calculator,com.example.library.dto,CreateBookRequest,0,24,0,0,0,11,0,7,0,7
-calculator,com.example,Calculator,6,22,1,1,1,6,1,5,0,5
-calculator,com.example.library.controller,BookController,19,276,7,23,8,75,7,16,0,8
-calculator,com.example.library.service,BookService,47,0,0,0,12,0,6,0,6,0
-calculator,com.example.library.service,CsvImportService,90,0,10,0,27,0,7,0,2,0
-calculator,com.example.library.service,FileStorageService,152,0,8,0,36,0,10,0,6,0
-calculator,com.example.library.model,Book,10,28,0,0,1,11,1,6,1,6
